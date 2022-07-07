@@ -22,7 +22,7 @@ from operator import truediv
 import random
 from turtle import position
 from Map.Position import Position
-
+import numpy as np
 # <summary>
 # Game AI Example
 # </summary>
@@ -34,7 +34,13 @@ class GameAI():
     score = 0
     energy = 0
 
-
+    map = []
+    coluna = []
+    for j in range(34):
+        coluna.append(0)
+    for i in range(59):
+        map.append(coluna)
+        
 
     goalPosition = Position(5,15)
     goalDir = "north"
@@ -166,16 +172,17 @@ class GameAI():
                 pass
             
             elif s == "breeze":
-                pass
+                self.careful = True
 
             elif s == "flash":
                 pass
 
             elif s == "blueLight":
-                pass
+                self.itemClose = True
 
             elif s == "redLight":
-                self.itemClose = True
+                if self.energy < 100:
+                    self.itemClose = True
                 
 
             elif s == "greenLight":
@@ -218,8 +225,12 @@ class GameAI():
 
         if EqualPositions(self.player,self.goalPosition):
             print("chegou")
-            self.SetGoalPositionRandom()
+            list = self.SetGoalPositionRandom()
 
+        ## para evitar poço
+        if self.careful == True:
+            i  =1
+            # nao sei
 
         n = random.randint(0,7)
         
@@ -237,9 +248,9 @@ class GameAI():
         self.PrintUtils()
 
 
-
-        if (self.DecideTurn()):
-            
+    	if (self.itemClose == True):
+            return ["pegar_ouro", "pegar_anel", "pegar_powerup"]
+        if (self.DecideTurn()):   
             return "virar_direita"
         elif (n == 99):
             print("vai pra esquerda!")
