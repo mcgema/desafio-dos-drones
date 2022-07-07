@@ -22,7 +22,7 @@ from operator import truediv
 import random
 from turtle import position
 from Map.Position import Position
-import numpy as np
+
 # <summary>
 # Game AI Example
 # </summary>
@@ -34,17 +34,17 @@ class GameAI():
     score = 0
     energy = 0
 
+
     map = []
     coluna = []
     for j in range(34):
         coluna.append(0)
     for i in range(59):
         map.append(coluna)
-        
+
 
     goalPosition = Position(5,15)
     goalDir = "north"
-    itemClose = "false"
     turnOffPrint = False
     action = ""
 
@@ -140,7 +140,8 @@ class GameAI():
     # </summary>
     # <returns>player position</returns>
     def GetPlayerPosition(self):
-        return self.player
+
+        return (self.player.x, self.player.y)
 
 
     # <summary>
@@ -168,40 +169,42 @@ class GameAI():
                 self.SetGoalPositionRandom()
                 pass
             
+            elif str(s).find("enemy") != -1:
+                self.action = "atacar"
+                pass
+
             elif s == "steps":
                 pass
             
             elif s == "breeze":
-                self.careful = True
+                self.SetGoalPositionRandom()
+                self.action = "andar_re"
+                pass
 
             elif s == "flash":
                 pass
 
             elif s == "blueLight":
-                self.itemClose = True
+                self.action = "pegar_ouro"
+                pass
 
             elif s == "redLight":
                 if self.energy < 100:
-                    self.itemClose = True
+                    self.action = "pegar_powerup"
                 
-
             elif s == "greenLight":
                 pass
 
             elif s == "weakLight":
                 pass
             
-            elif str(s).find("enemy") != -1:
-                print("\nENEMY\n")
-                self.action = "atacar"
-                pass
+            
 
 
     # <summary>
     # No observations received
     # </summary>
     def GetObservationsClean(self):
-
         pass
     
 
@@ -217,43 +220,38 @@ class GameAI():
         else:
             self.turnOffPrint = False
 
+
         if self.action != "":
             command = self.action
             self.action = ""
             print(command)
             return command
 
-        if EqualPositions(self.player,self.goalPosition):
-            print("chegou")
-            list = self.SetGoalPositionRandom()
 
-        ## para evitar poço
-        if self.careful == True:
-            i  =1
-            # nao sei
+
+        if EqualPositions(self.player,self.goalPosition):
+            self.SetGoalPositionRandom()
+
 
         n = random.randint(0,7)
         
 
-        if (self.GetPlayerPosition().x < self.goalPosition.x):
+        if (self.player.x < self.goalPosition.x):
             self.goalDir = "east"
-        elif (self.GetPlayerPosition().x > self.goalPosition.x):
+        elif (self.player.x > self.goalPosition.x):
             self.goalDir = "west"
-        elif (self.GetPlayerPosition().y < self.goalPosition.y):
+        elif (self.player.y < self.goalPosition.y):
             self.goalDir = "south"
-        elif (self.GetPlayerPosition().y > self.goalPosition.y):
+        elif (self.player.y > self.goalPosition.y):
             self.goalDir = "north"
 
 
-        self.PrintUtils()
+       
 
-
-    	if (self.itemClose == True):
-            return ["pegar_ouro", "pegar_anel", "pegar_powerup"]
-        if (self.DecideTurn()):   
+        if (self.DecideTurn()):
+            
             return "virar_direita"
         elif (n == 99):
-            print("vai pra esquerda!")
             return "virar_esquerda"
         elif self.dir == self.goalDir:
             return "andar"
@@ -279,6 +277,7 @@ class GameAI():
         else:
             return False
 
+
     def SetGoalPositionRandom(self):
         x = random.randint(0,58)
         y = random.randint(0,33)
@@ -286,12 +285,9 @@ class GameAI():
 
 
     def PrintUtils(self, msg = ""):
-        print("~~~~~~ PRINT ~~~~~~")
         if not self.state == "dead":
-            print("position: ", (self.player.x, self.player.y))
-            print("goal position: ", (self.goalPosition.x, self.goalPosition.y))
             if msg != "":
-                print(msg)
+                print(">> ", msg, self.GetPlayerPosition())
         else:
             print("Dead...")
         print("")
