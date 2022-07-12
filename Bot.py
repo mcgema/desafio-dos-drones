@@ -25,21 +25,22 @@ from Socket.HandleClient import HandleClient
 from dto.PlayerInfo import PlayerInfo
 from dto.ScoreBoard import ScoreBoard
 import datetime
-from astar import *
+
 # <summary>
 # Bot Class
 # </summary>
 class Bot():
 
-    name = "F1" # BOT NAME
-    host = "atari.icad.puc-rio.br" # SERVER
+    name = "Marcelo Dbot" # BOT NAME
+    host = "192.168.0.42" # SERVER
+	#atari.icad.puc-rio.br
 
     client = None
     gameAi = None
     timer1 = None
     
     running = True
-    thread_interval = 1 # USE BETWEEN 0.1 and 1 (0.1 real setting, 1 debug settings and makes the bot slower)
+    thread_interval = 0.1 # USE BETWEEN 0.1 and 1 (0.1 real setting, 1 debug settings and makes the bot slower)
 
     playerList = {} #new Dictionary<long, PlayerInfo>
     shotList = [] #new List<ShotInfo>
@@ -89,6 +90,7 @@ class Bot():
     # <param name="sender">Sender object</param>
     # <param name="args">Event arguments</param>
     def ReceiveCommand(self, cmd):
+
 
         if len(cmd) > 0:
             try:
@@ -296,7 +298,6 @@ class Bot():
     def DoDecision(self):
 
         decision = self.gameAi.GetDecision()
-        print("decisao: ", decision)
         if decision == "virar_direita":
             self.client.sendTurnRight()
         elif decision == "virar_esquerda":
@@ -358,7 +359,7 @@ class Bot():
 
             print("Connected")
             self.client.sendName(self.name)
-            #self.client.sendRGB(255,0,0)  # BOT COLOR
+            self.client.sendRGB(100,255,100)  # BOT COLOR
             self.client.sendRequestGameStatus()
             self.client.sendRequestUserStatus()
             self.client.sendRequestObservation()
