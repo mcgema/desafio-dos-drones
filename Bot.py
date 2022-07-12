@@ -25,13 +25,13 @@ from Socket.HandleClient import HandleClient
 from dto.PlayerInfo import PlayerInfo
 from dto.ScoreBoard import ScoreBoard
 import datetime
-
+from astar import *
 # <summary>
 # Bot Class
 # </summary>
 class Bot():
 
-    name = "Rachel" # BOT NAME
+    name = "F1" # BOT NAME
     host = "atari.icad.puc-rio.br" # SERVER
 
     client = None

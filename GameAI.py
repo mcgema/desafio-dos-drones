@@ -21,8 +21,10 @@ __email__ = "abaffa@inf.puc-rio.br"
 from operator import truediv
 import random
 from turtle import position
-from Map.Position import Position
 
+from numpy import block
+from Map.Position import Position
+from astar import astar
 # <summary>
 # Game AI Example
 # </summary>
@@ -34,8 +36,10 @@ class GameAI():
     score = 0
     energy = 0
 
-
+    count = 0
     map = []
+    treasury_list = []
+
     coluna = []
     for j in range(34):
         coluna.append(0)
@@ -167,7 +171,7 @@ class GameAI():
             self.PrintUtils(s)
             if s == "blocked":
                 self.SetGoalPositionRandom()
-                pass
+                self.state = block
             
             elif str(s).find("enemy") != -1:
                 self.action = "atacar"
@@ -214,7 +218,7 @@ class GameAI():
     # </summary>
     # <returns>command string to new decision</returns>
     def GetDecision(self):
-
+        
         if self.state == "dead":
             return ""
         else:
@@ -227,7 +231,10 @@ class GameAI():
             print(command)
             return command
 
-
+        self.count += 1
+        
+        if self.count > 100:
+            self.SetGoalPosition()
 
         if EqualPositions(self.player,self.goalPosition):
             self.SetGoalPositionRandom()
@@ -246,7 +253,7 @@ class GameAI():
             self.goalDir = "north"
 
 
-       
+        
 
         if (self.DecideTurn()):
             
@@ -282,6 +289,16 @@ class GameAI():
         x = random.randint(0,58)
         y = random.randint(0,33)
         self.goalPosition = Position(x,y)
+
+    def SetGoalPosition():
+        # ir para local com tesouro
+        end = self.treasury_list.pop(0)
+        path = astar(self.map, (self.player.x,self.player.y),  end)
+        for move in path:
+            if move[0] > self.player.x:
+                return "andar"
+
+
 
 
     def PrintUtils(self, msg = ""):
